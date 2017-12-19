@@ -20,7 +20,8 @@ require('.local.conf');
   <script>
 function s() {
 var m = document.forms[0].elements.mail.value;
-var re = /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i;
+//var re = /^[^\s()<>@,;:\/]+@\w[\w\.-]+\.[a-z]{2,}$/i;
+var re = /.+@.+\..+/i;
 if ((m != null) && (m.length > 0) && re.test(m)) {
     document.forms[0].elements.a.value = 1;
     document.forms[0].submit();
@@ -39,7 +40,10 @@ $comments = (isset($_POST["c"])) ? htmlspecialchars($_POST["c"]) : "";
 $comments2 = (isset($_POST["c2"])) ? htmlspecialchars($_POST["c2"]) : "";
 $ack = (isset($_POST["a"]) && preg_match('/^\d$/', $_POST["a"])) ? $_POST["a"] : 0;
 
-//print_r($_POST);
+$comments_br = preg_replace("/\n/","<br />\n",$comments);
+$comments2_br = preg_replace("/\n/","<br />\n",$comments2);
+
+// print_r($_POST);
 
 ?>
 <form method=post>
@@ -99,9 +103,9 @@ $sql = "select (sp_date || ' ' || hall_sname || ' ' || sp_name) as sp, count(*),
 $res = pg_query($sql);
 
 $textout = "Здравствуйте!<br /><br />\n";
-$textout .= $comments;
+$textout .= $comments_br;
 $textout .= "<br /><br />\n";
-$textout .= $comments2;
+$textout .= $comments2_br;
 $textout .= "<br /><br />\n";
 $textout .= '<table border=1 style="border-collapse: collapse" cellpadding=3>';
 $textout .= '<tr><td colspan=2>Номер заказа: <b>'.$order.'</b></td></tr>';
@@ -112,8 +116,9 @@ $wyy = substr($when, 0, 4);
 $wmm = substr($when, 5, 2);
 $wdd = substr($when, 8, 2);
 $textout .= '<tr><td colspan=2>Срок выкупа до: <b>'."$wtime $wdd.$wmm.$wyy".'</b></td></tr>';
+$textout1 = "";
 while ($row = pg_fetch_assoc($res)){
-  $textout .= '<tr><td>' .
+  $textout1 .= '<tr><td>' .
     iconv('cp1251','UTF-8',$row["sp"]) . '</td><td>' .
     $row["count"] . ' X '. substr($row["price"], 0, strlen($row["price"])-3) .
     ' = ' . substr($row["sum"], 0, strlen($row["sum"])-3) . 
@@ -121,7 +126,9 @@ while ($row = pg_fetch_assoc($res)){
 $total_tickets += $row["count"];
 $total_price += $row["sum"];
 }
-$textout .= '<tr><td colspan=2>Всего в заказе билетов: <b>'.$total_tickets.'</b><br /> Итоговая сумма к оплате: <b>'.$total_price.'</b> рублей</td></tr>';
+$textout .= '<tr><td colspan=2>Всего в заказе билетов: <b>'.$total_tickets.'</b></td></tr>'."\n"; 
+$textout .= '<tr><td colspan=2>Итоговая сумма к оплате: <b>'.$total_price.'</b> рублей</td></tr>'."\n";
+$textout .= $textout1;
 $textout .= '</table><br /><br />';
 $textout .= "-- \n<br />  С уважением,<br />\n$sign<br />\n  Телефон (812) <b>383-59-18</b>, факс (812) 383-59-19<br />\n";
 echo "<div id=d3>$textout</div>";

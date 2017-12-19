@@ -1,0 +1,9 @@
+<?php
+$greeting = "пользователь";
+$buttoncolor = "plum";
+$fromname = '=?utf-8?B?0KHRgtC+0Lsg0LfQsNC60LDQt9C+0LI=?=';
+$sign = "  театр <br />\n";
+$userid = 1000;
+$prod = false;
+
+?>
