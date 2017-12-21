@@ -59,7 +59,7 @@ if (!$uri2) {
 
 echo "<a href=\"$uri2\">Начать с начала</a> &bull;&nbsp; Привет, $greeting!<br />\n";
 
-$conn_string = "host=192.168.16.23 port=5432 dbname=m225 user=inet_app password=inet_app";
+$conn_string = "host=localhost port=5432 dbname=1 user=2 password=3";
 
 $db = pg_connect($conn_string);
 if (!$db){
